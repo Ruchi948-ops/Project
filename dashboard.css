@@ -1,0 +1,527 @@
+/* General Styling */
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    color: #2c3e50;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Header Styling */
+.header {
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    background: linear-gradient(90deg, #0052d4, #4364f7, #6fb1fc);
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.header h1 {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Upload + Search Container */
+.upload-search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.upload-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    width: 450px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.upload-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.upload-card h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #333;
+}
+
+.upload-card label {
+    font-weight: 600;
+    font-size: 14px;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    color: #444;
+}
+
+.upload-card input,
+.upload-card select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.upload-card button {
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.upload-card button:hover {
+    background-color: #218838;
+}
+
+
+/*search bar */
+.search-title {
+    font-size: 22px;
+    text-align: center; /* Center the title */
+    margin: 20px 0;
+}
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center elements */
+    justify-content: center;
+    gap: 20px; /* Add space between search form and IP input */
+    margin-bottom: 30px;
+}
+
+.search-form input,
+.search-form select,
+.search-form button {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+}
+.search-form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.search-form button:hover {
+    background-color: #0056b3;
+}
+.patches-title {
+    font-size: 24px;
+    margin-top: 30px;
+}
+.badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.badge-pending {
+    background-color: orange;
+    color: white;
+}
+.badge-applied {
+    background-color: green;
+    color: white;
+}
+.badge-rolled {
+    background-color: red;
+    color: white;
+}
+
+/* Action Buttons Container */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Unified style for Apply and Scan buttons */
+.apply-patch-btn,
+.scan-patch-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: white;
+}
+
+/* Green Apply Button */
+.apply-patch-btn {
+    background-color: #28a745;
+}
+
+.apply-patch-btn:hover {
+    background-color: #218838;
+}
+
+/* Blue Scan Button */
+.scan-patch-btn {
+    background-color: #007bff;
+}
+
+.scan-patch-btn:hover {
+    background-color: #0056b3;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+/* Modal Styling */
+        
+.search-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    background-color: #f1f1f1;  /* Light background for the title */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between each result */
+    align-items: center;
+    margin-top: 30px;
+}
+
+.github-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.github-card {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+    width: 30%; /* Set width to 30% to create 3 items per row */
+}
+
+.github-card:hover {
+    transform: translateY(-5px);
+}
+
+.github-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.github-card p {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.github-card a {
+    color: #007bff;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.github-card a:hover {
+    text-decoration: underline;
+}
+
+/* Ensure responsiveness */
+@media (max-width: 900px) {
+    .github-card {
+        width: 45%; /* 2 items per row on medium screens */
+    }
+}
+
+@media (max-width: 600px) {
+    .github-card {
+        width: 100%; /* 1 item per row on small screens */
+    }
+}
+
+/* Table Styling */
+.patches-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 30px;
+    color: #444;
+}
+
+.search-results {
+    width: 90%;
+    margin: 0 auto 40px auto;
+}
+
+.search-results table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.search-results th,
+.search-results td {
+    padding: 12px 16px;
+    font-size: 14px;
+    text-align: left;
+}
+
+.search-results th {
+    background: linear-gradient(to right, #0052d4, #4364f7);
+    color: white;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-right: 1px solid #4364f7;
+}
+
+.search-results td {
+    background: #ffffff;
+    border-right: 1px solid #eee;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.search-results tr:hover td {
+    background-color: #f1f9ff;
+}
+
+.search-results a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.search-results a:hover {
+    text-decoration: underline;
+}
+
+/* Badges */
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.badge-pending {
+    background-color: #ffeeba;
+    color: #856404;
+}
+
+.badge-applied {
+    background-color: #c3e6cb;
+    color: #155724;
+}
+
+.badge-rolled {
+    background-color: #d6d8db;
+    color: #383d41;
+}
+
+/* Patch Highlight */
+.latest-patch-highlight {
+    border-left: 6px solid #28a745;
+    padding: 20px 25px;
+    margin: 30px auto;
+    background-color: #f0fdf4;
+    border-radius: 12px;
+    width: 80%;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.latest-patch-highlight:hover {
+    background-color: #e9fce8;
+}
+
+.latest-patch-highlight h3 {
+    margin-top: 0;
+    color: #218838;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.latest-patch-highlight p {
+    margin: 6px 0;
+    font-size: 15px;
+}
+
+.latest-patch-highlight a.btn {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.latest-patch-highlight a.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Global Button Styles */
+button,
+.btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s ease;
+    display: inline-block;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* Popup Alert */
+.popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff4c4c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.badge-pending {
+    background-color: #ffeeba;
+    color: #856404;
+}
+
+.badge-applied {
+    background-color: #c3e6cb;
+    color: #155724;
+}
+
+.badge-rolled {
+    background-color: #d6d8db;
+    color: #383d41;
+}
+
+
+
+
+
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .search-results table,
+    .search-results thead,
+    .search-results tbody,
+    .search-results th,
+    .search-results td,
+    .search-results tr {
+        display: block;
+    }
+
+    .search-results th {
+        display: none;
+    }
+
+    .search-results td {
+        position: relative;
+        padding-left: 50%;
+        border: none;
+        border-bottom: 1px solid #eee;
+    }
+
+    .search-results td::before {
+        position: absolute;
+        left: 10px;
+        width: 45%;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #444;
+    }
+}
+
+

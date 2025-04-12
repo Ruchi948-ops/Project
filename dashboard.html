@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patch Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='icon/logo.webp') }}" alt="Logo" class="logo">
+        <h1>Patch Management System</h1>
+    </div>
+
+    <!-- Warning Message Section for Blocked Patches -->
+    {% if warning_message %}
+        <div class="alert alert-danger">
+            <strong>Warning!</strong> {{ warning_message }}
+        </div>
+    {% endif %}
+
+    <!-- Latest Patch Section -->
+    {% if latest_patch %}
+    <div class="latest-patch-highlight">
+        <h3>🔥 Latest Patch</h3>
+        <p><strong>Name:</strong> {{ latest_patch.file_name }}</p>
+        <p><strong>Version:</strong> {{ latest_patch.patch_version }}</p>
+        <p><strong>OS:</strong> {{ latest_patch.os_type }}</p>
+        <p><strong>Status:</strong>
+            {% if latest_patch.status == 'pending' %}
+                <span class="badge badge-pending">Pending</span>
+            {% elif latest_patch.status == 'applied' %}
+                <span class="badge badge-applied">Applied</span>
+            {% elif latest_patch.status == 'rolled back' %}
+                <span class="badge badge-rolled">Rolled Back</span>
+            {% else %}
+                <span class="badge">{{ latest_patch.status }}</span>
+            {% endif %}
+        </p>
+        <p><strong>Uploaded:</strong> {{ latest_patch.upload_date }}</p>
+        <a href="#patch-{{ latest_patch.id }}" class="btn btn-success">⏩ Go to Patch</a>
+    </div>
+    {% endif %}
+
+    <!-- Upload Patch Section -->
+    <div class="upload-search-container">
+        <div class="upload-card">
+            <h3>Upload Patch</h3>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <label for="patchFile">Select Patch File</label>
+                <input type="file" id="patchFile" name="patchFile" required>
+                <label for="patchVersion">Patch Version</label>
+                <input type="text" id="patchVersion" name="patchVersion" placeholder="Enter patch version" required>
+                <label for="osType">Operating System</label>
+                <input type="text" id="osType" name="osType" placeholder="Enter OS type" required>
+                <button type="submit">Upload Patch</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("uploadForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+            fetch("/upload_patch", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.success ? "✅ " + data.message : "❌ " + data.message);
+                if (data.success) location.reload();
+            })
+            .catch(error => alert("❌ Network error! " + error.message));
+        });
+    </script>
+
+    <!-- Search Patches Section -->
+    <div class="search-title">Search Patches</div>
+    <div class="search-container">
+        <form action="{{ url_for('dashboard') }}" method="GET" class="search-form">
+            <!-- Search by patch name -->
+            <input type="text" name="query" placeholder="Search Patches" value="{{ search_query }}">
+
+            <!-- Search by OS type (Linux, Windows, etc.) -->
+            <input type="text" name="os_type" placeholder="Enter OS (e.g., Linux, Windows)" value="{{ os_type }}">
+
+            <!-- Status filter -->
+            <select name="status">
+                <option value="">All Status</option>
+                <option value="pending" {% if status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="applied" {% if status == 'applied' %}selected{% endif %}>Applied</option>
+                <option value="rolled back" {% if status == 'rolled back' %}selected{% endif %}>Rolled Back</option>
+            </select>
+
+            <!-- Search button -->
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+   
+    <!-- Available Patches -->
+    <div class="patches-title">Available Patches</div>
+    <section class="search-results">
+        {% if patches %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Patch Name</th>
+                    <th>OS Type</th>
+                    <th>Latest Version</th>
+                    <th>Status</th>
+                    <th>Uploaded On</th>
+                    <th>Uploaded From</th>
+                    <th>Download</th>
+                    <th>Downloaded From</th>
+                    <th>Actions</th>
+                    <th>Rollback</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patch in patches %}
+                <tr id="patch-{{ patch.id }}">
+                    <td>{{ patch.file_name }}</td>
+                    <td>{{ patch.os_type }}</td>
+                    <td>{{ patch.patch_version }}</td>
+                    <td>
+                        {% if patch.status == 'pending' %}
+                            <span class="badge badge-pending">Pending</span>
+                        {% elif patch.status == 'applied' %}
+                            <span class="badge badge-applied">Applied</span>
+                        {% elif patch.status == 'rolled back' %}
+                            <span class="badge badge-rolled">Rolled Back</span>
+                        {% else %}
+                            <span class="badge">{{ patch.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ patch.upload_date }}</td>
+                    <td>{{ patch.uploaded_from_ip }}</td>
+                    <td><a href="{{ url_for('download_patch', filename=patch.file_name | urlencode) }}">Download</a></td>
+                    <td>{{ patch.downloaded_from_ip if patch.downloaded_from_ip else 'Not Downloaded' }}</td>
+                    <td>
+                        {% if patch.status == 'pending' %}
+                            <div class="action-buttons">
+                                <button type="button" class="apply-patch-btn" data-patch-id="{{ patch.id }}">Apply</button>
+                                <button type="button" class="scan-patch-btn" data-file-name="{{ patch.file_name }}">Scan</button>
+                            </div>
+                        {% elif patch.status == 'applied' %}
+                            <span class="badge badge-applied">Applied</span>
+                        {% else %}
+                            <span class="badge">No Action</span>
+                        {% endif %}
+                    </td>
+                     <td>
+                        {% if patch.status == 'applied' %}
+                        <form action="{{ url_for('rollback_patch', patch_id=patch.id) }}" method="POST">
+                            <button type="submit" class="btn btn-danger">Rollback</button>
+                        </form>
+                        {% elif patch.status == 'rolled back' %}
+                            Rolled Back
+                        {% else %}
+                            No Action
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No patches found.</p>
+        {% endif %}
+    </section>
+
+    <script>
+    document.querySelectorAll(".apply-patch-btn").forEach(button => {
+        button.addEventListener("click", function(event) {
+            event.preventDefault();
+            let patchId = this.dataset.patchId;
+            fetch(`/apply_patch/${patchId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.success ? "✅ " + data.message : "❌ " + data.message);
+                if (data.success) location.reload();
+            })
+            .catch(error => alert("❌ Network error! Please check the backend."));
+        });
+    });
+    </script>
+
+    <script>
+    let timeout = 30 * 60 * 1000;
+    let warningTime = 25 * 60 * 1000;
+    let warningTimer = setTimeout(() => alert("You will be logged out in 5 minutes due to inactivity."), warningTime);
+    let logoutTimer = setTimeout(() => window.location.href = "/logout", timeout);
+    document.addEventListener("mousemove", resetTimers);
+    document.addEventListener("keypress", resetTimers);
+    function resetTimers() {
+        clearTimeout(warningTimer);
+        clearTimeout(logoutTimer);
+        warningTimer = setTimeout(() => alert("You will be logged out in 5 minutes due to inactivity."), warningTime);
+        logoutTimer = setTimeout(() => window.location.href = "/logout", timeout);
+    }
+    </script>
+    <script>
+        document.querySelectorAll(".scan-patch-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                const fileName = this.dataset.fileName;
+                fetch(`/scan_patch?filename=${encodeURIComponent(fileName)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.safe) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Patch is Safe ✅',
+                                text: 'No dangerous command found.',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Patch is Unsafe ⚠️',
+                                text: `Detected: ${data.dangerous_command}`,
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Scan Error',
+                            text: 'Unable to scan this patch.',
+                        });
+                    });
+            });
+        });
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>        
+     <div style="text-align: center; margin: 40px auto;">
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    </div>
+</body>
+</html>

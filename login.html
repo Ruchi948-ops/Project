@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <!-- ✅ SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div>
+        <h2>Login</h2>
+        <form id="login" onsubmit="handleLogin(event)">
+            <input type="email" name="loginEmail" placeholder="Email" required>
+            <input type="password" name="loginPassword" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+
+        <p>Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const form = document.getElementById("login");
+            const formData = new FormData(form);
+
+            fetch("/login", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+    if (data.success) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Login Successful!',
+            text: 'Redirecting to dashboard...',
+            timer: 2000,
+            showConfirmButton: false,
+            timerProgressBar: true,
+            didClose: () => {
+                window.location.href = "/index";
+            }
+        });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: data.message || 'Invalid email or password.',
+            confirmButtonText: 'Try Again'
+        });
+    }
+})
+            .catch(error => {
+                console.error("Error:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Something went wrong. Please try again later.',
+                });
+            });
+        }
+    </script>
+</body>
+</html>
+

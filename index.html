@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patch Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+    <!-- Logo and User Greeting -->
+    <header>
+        <img src="{{ url_for('static', filename='icon/logo.webp') }}" alt="Logo" class="logo">
+        <div class="welcome-message">
+            <h2>Welcome, {{ session['username'] }}!</h2>
+        </div>
+    </header>
+
+    <!-- Styled Button Only -->
+    <a href="{{ url_for('dashboard') }}" class="button">Go to Dashboard</a>
+</body>
+</html>
